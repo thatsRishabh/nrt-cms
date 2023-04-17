@@ -73,7 +73,6 @@ class SliderController extends Controller
 			$sliderImage = new Slider;
 			$sliderImage->name = $request->name;
             $sliderImage->menu_id = $request->menu_id;
-            $sliderImage->submenu_id = $request->submenu_id;
             $sliderImage->order_number = $request->order_number;
             if ($request->hasFile('image')) {
 				$file = $request->file('image');
@@ -108,7 +107,6 @@ class SliderController extends Controller
 			$sliderImage= Slider::find($id);
             $sliderImage->name = $request->name;
             $sliderImage->menu_id = $request->menu_id;
-            $sliderImage->submenu_id = $request->submenu_id;
             $sliderImage->order_number = $request->order_number;
             {
 				if(gettype($request->image) == "string"){

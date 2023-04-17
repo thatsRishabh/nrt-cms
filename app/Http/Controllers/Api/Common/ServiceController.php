@@ -73,7 +73,6 @@ class ServiceController extends Controller
 			$servicePage = new Service;
 			$servicePage->name = $request->name;
             $servicePage->menu_id = $request->menu_id;
-            $servicePage->submenu_id = $request->submenu_id;
             $servicePage->order_number = $request->order_number;
             $servicePage->description = $request->description;
             if ($request->hasFile('image')) {
@@ -108,7 +107,6 @@ class ServiceController extends Controller
 			$servicePage= Service::find($id);
 			$servicePage->name = $request->name;
             $servicePage->menu_id = $request->menu_id;
-            $servicePage->submenu_id = $request->submenu_id;
             $servicePage->order_number = $request->order_number;
             $servicePage->description = $request->description;
             {

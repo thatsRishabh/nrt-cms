@@ -44,10 +44,8 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
 		// services
 		Route::controller(AppSettingController::class)->group(function () {
-			Route::post('app-settings', 'appSettings');
+			Route::get('app-settings', 'appSettings');
 			Route::post('app-setting-update/{id?}', 'update');
-			Route::resource('app-setting', AppSettingController::class)->only([
-				'store','show' ]);
 		});
 
 		Route::controller(SliderController::class)->group(function () {

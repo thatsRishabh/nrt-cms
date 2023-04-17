@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->nullable();
             $table->integer('order_number')->nullable();
+            $table->boolean('position_type')->comment('1 for Header, 2 for Footer')->nullable();
             $table->timestamps();
         });
     }

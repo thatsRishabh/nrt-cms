@@ -65,6 +65,7 @@ class MenuController extends Controller
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required|unique:menus,name,',
             'slug'                      => 'required',
+			'position_type'             => 'numeric',
         ]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
@@ -76,6 +77,7 @@ class MenuController extends Controller
             $menuPage->parent_id = $request->parent_id;
             $menuPage->slug = $request->slug;
             $menuPage->order_number = $request->order_number;
+			$menuPage->position_type = $request->position_type;
 			$menuPage->save();
 
 			DB::commit();
@@ -92,6 +94,7 @@ class MenuController extends Controller
 		$validation = Validator::make($request->all(), [
 			'name' => 'required|unique:menus,name,'.$id,
             'slug'                      => 'required',
+			'position_type'             => 'numeric',
 		]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
@@ -103,6 +106,7 @@ class MenuController extends Controller
             $menuPage->parent_id = $request->parent_id;
             $menuPage->slug = $request->slug;
             $menuPage->order_number = $request->order_number;
+			$menuPage->position_type = $request->position_type;
 			$menuPage->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$menuPage, 200);

@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('menu_id')->nullable();
             $table->foreign('menu_id')->references('id')->on('menus')->comment('To identify menus')->onDelete('cascade');
-            $table->unsignedBigInteger('submenu_id')->nullable();
-            $table->foreign('submenu_id')->references('id')->on('menus')->comment('To identify menus')->onDelete('cascade');
             $table->string('name');
             $table->string('image')->nullable();
             $table->integer('order_number')->nullable();
