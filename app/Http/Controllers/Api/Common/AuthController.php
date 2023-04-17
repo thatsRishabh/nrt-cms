@@ -31,7 +31,7 @@ class AuthController extends Controller
 
 		]);
 		if ($validation->fails()) {
-			return  prepareResult(false,'validation failed' ,[], 500);
+			return  prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
 		}
 
 		try 

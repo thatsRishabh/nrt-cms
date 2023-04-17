@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('site_pages', function (Blueprint $table) {
+        Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('site_pages')->comment('To identify sub pages')->onDelete('cascade');
+            $table->foreign('parent_id')->references('id')->on('menus')->comment('To identify menus')->onDelete('cascade');
             $table->string('name');
+            $table->string('slug')->nullable();
+            $table->integer('order_number')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('site_pages');
+        Schema::dropIfExists('menus');
     }
 };

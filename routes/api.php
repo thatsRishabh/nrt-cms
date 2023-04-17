@@ -26,26 +26,36 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 	Route::group(['middleware' => 'auth:api'],function () {
 
 
-		// Route::controller(CategoryController::class)->group(function () {
-		// 	Route::post('categories', 'categories');
-		// 	Route::post('category-update/{id?}', 'update');
-		// 	Route::resource('category', CategoryController::class)->only([
-		// 		'store','destroy','show' ]);
-		// });
 
-        // Site Page
-        Route::controller(SitePagesController::class)->group(function () {
-			Route::post('sitepages', 'sitePages');
-			Route::resource('sitepage', SitePagesController::class)->only([
+		 // menu Pages
+		 Route::controller(MenuController::class)->group(function () {
+			Route::post('menus', 'menus');
+			Route::resource('menu', MenuController::class)->only([
 				'store','destroy','show' , 'update']);
 		});
 
- 		// // dashboard        
-		// Route::controller(DashboardController::class)->group(function () {
-		// 	Route::post('dashboard', 'dashboard');
-		// 	Route::post('category-wise-list', 'categoryWiseList'); 
-		// 	Route::post('dashboard-graph', 'dashboardGraph'); 
-		// 	Route::post('dashboard-graph-list', 'dashboardGraphByName'); 
-		// });
+		// services
+		Route::controller(ServiceController::class)->group(function () {
+			Route::post('services', 'services');
+			Route::post('service-update/{id?}', 'update');
+			Route::resource('service', ServiceController::class)->only([
+				'store','destroy','show' ]);
+		});
+
+		// services
+		Route::controller(AppSettingController::class)->group(function () {
+			Route::post('app-settings', 'appSettings');
+			Route::post('app-setting-update/{id?}', 'update');
+			Route::resource('app-setting', AppSettingController::class)->only([
+				'store','show' ]);
+		});
+
+		Route::controller(SliderController::class)->group(function () {
+			Route::post('sliders', 'sliders');
+			Route::post('slider-update/{id?}', 'update');
+			Route::resource('slider', SliderController::class)->only([
+				'store','destroy','show' ]);
+		});
+
 	});
 });

@@ -4,19 +4,20 @@ namespace App\Http\Controllers\Api\Common;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\SitePages;
+
+use App\Models\Slider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class SitePagesController extends Controller
+class SliderController extends Controller
 {
     //
-    public function sitePages(Request $request)
+    public function sliders(Request $request)
 	{
 		try {
 
-			$query = SitePages::select('*')->with('subPages')->whereNull('parent_id')
+			$query = Slider::select('*')
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
@@ -56,24 +57,35 @@ class SitePagesController extends Controller
 			return prepareResult(false,'Error while fatching Records' ,$e->getMessage(), 500);
 		}
 	}
-
+ 
 	public function store(Request $request)
 	{
         $validation = Validator::make($request->all(),  [
-            'name'                      => 'required|unique:site_pages,name,',
+            'name'                      => 'required',
+            'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+            'order_number'                      => 'numeric',
         ]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
 		} 
 		DB::beginTransaction();
 		try { 
-			$sitePage = new SitePages;
-			$sitePage->name = $request->name;
-            $sitePage->parent_id = $request->parent_id;
-			$sitePage->save();
+			$sliderImage = new Slider;
+			$sliderImage->name = $request->name;
+            $sliderImage->menu_id = $request->menu_id;
+            $sliderImage->submenu_id = $request->submenu_id;
+            $sliderImage->order_number = $request->order_number;
+            if ($request->hasFile('image')) {
+				$file = $request->file('image');
+				$filename=time().'.'.$file->getClientOriginalExtension();
+				if ($file->move('assets/slider_photos', $filename)) {
+					$sliderImage->image=env('CDN_DOC_URL').'assets/slider_photos/'.$filename.'';
+				}
+			}
+			$sliderImage->save();
 
 			DB::commit();
-			return prepareResult(true,'Your data has been saved successfully' , $sitePage, 200);
+			return prepareResult(true,'Your data has been saved successfully' , $sliderImage, 200);
 
 		} catch (\Throwable $e) {
 			Log::error($e);
@@ -84,19 +96,37 @@ class SitePagesController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validation = Validator::make($request->all(), [
-			'name' => 'required|unique:site_pages,name,'.$id,
+			'name' => 'required',
+            'order_number'                      => 'numeric',
+
 		]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
 		} 
 		DB::beginTransaction();
 		try {      
-			$sitePage= SitePages::find($id);
-			$sitePage->name = $request->name;
-            $sitePage->parent_id = $request->parent_id;
-			$sitePage->save();
+			$sliderImage= Slider::find($id);
+            $sliderImage->name = $request->name;
+            $sliderImage->menu_id = $request->menu_id;
+            $sliderImage->submenu_id = $request->submenu_id;
+            $sliderImage->order_number = $request->order_number;
+            {
+				if(gettype($request->image) == "string"){
+					$sliderImage->image = $request->image;
+				}
+				else{
+					if ($request->hasFile('image')) {
+						$file = $request->file('image');
+						$filename=time().'.'.$file->getClientOriginalExtension();
+						if ($file->move('assets/slider_photos', $filename)) {
+							$sliderImage->image=env('CDN_DOC_URL').'assets/slider_photos/'.$filename.'';
+						}
+					}
+				}
+			}
+			$sliderImage->save();
 			DB::commit();
-			return prepareResult(true,'Your data has been Updated successfully' ,$sitePage, 200);
+			return prepareResult(true,'Your data has been Updated successfully' ,$sliderImage, 200);
 		} catch (\Throwable $e) {
 			Log::error($e);
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
@@ -106,10 +136,10 @@ class SitePagesController extends Controller
 	public function show($id)
 	{
 		try {
-			$sitePage = SitePages::find($id);
-			if($sitePage)
+			$sliderImage = Slider::find($id);
+			if($sliderImage)
 			{
-				return prepareResult(true,'Record Fatched Successfully' ,$sitePage, 200); 
+				return prepareResult(true,'Record Fatched Successfully' ,$sliderImage, 200); 
 			}
 			return prepareResult(false,'Record not found' ,[], 500);
 		} catch (\Throwable $e) {
@@ -121,10 +151,10 @@ class SitePagesController extends Controller
 	public function destroy($id)
 	{
 		try {
-			$sitePage = SitePages::find($id);
-			if($sitePage)
+			$sliderImage = Slider::find($id);
+			if($sliderImage)
 			{
-				$result=$sitePage->delete();
+				$result=$sliderImage->delete();
 				return prepareResult(true,'Record Deleted Successfully' ,$result, 200); 
 			}
 			return prepareResult(false,'Record Not Found' ,[], 500);
