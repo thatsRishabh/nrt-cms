@@ -26,7 +26,7 @@ class AppSettingController extends Controller
             	}
     }
     
-	public function update(Request $request, $id)
+	public function update(Request $request)
 	{
 		$validation = Validator::make($request->all(), [
             'app_name'                        => 'required',
@@ -42,8 +42,16 @@ class AppSettingController extends Controller
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
 		} 
 		DB::beginTransaction();
-		try {      
-			$setting= AppSetting::find($id);
+		try {     
+			if(AppSetting::first())
+            {
+                $setting = AppSetting::first();
+            }
+            else
+            {
+                $setting = new AppSetting;
+            } 
+			// $setting= AppSetting::find($id);
 			$setting->app_name = $request->app_name;
             $setting->description = $request->description;
             $setting->call_us = $request->call_us;
@@ -68,62 +76,11 @@ class AppSettingController extends Controller
             $setting->app_store_url = $request->app_store_url;
             $setting->support_email = $request->support_email;
             $setting->support_contact_number = $request->support_contact_number;
-            {
-				if(gettype($request->logo_path) == "string"){
-					$setting->logo_path = $request->logo_path;
-				}
-				else{
-					if ($request->hasFile('logo_path')) {
-						$file = $request->file('logo_path');
-						$filename=time().'.'.$file->getClientOriginalExtension();
-						if ($file->move('assets/setting_photos', $filename)) {
-							$setting->logo_path=env('CDN_DOC_URL').'assets/setting_photos/'.$filename.'';
-						}
-					}
-				}
-			}
-            {
-				if(gettype($request->logo_thumb_path) == "string"){
-					$setting->logo_thumb_path = $request->logo_thumb_path;
-				}
-				else{
-					if ($request->hasFile('logo_thumb_path')) {
-						$file = $request->file('logo_thumb_path');
-						$filename=time().'.'.$file->getClientOriginalExtension();
-						if ($file->move('assets/setting_photos', $filename)) {
-							$setting->logo_thumb_path=env('CDN_DOC_URL').'assets/setting_photos/'.$filename.'';
-						}
-					}
-				}
-			}
-            {
-				if(gettype($request->fav_icon) == "string"){
-					$setting->fav_icon = $request->fav_icon;
-				}
-				else{
-					if ($request->hasFile('fav_icon')) {
-						$file = $request->file('fav_icon');
-						$filename=time().'.'.$file->getClientOriginalExtension();
-						if ($file->move('assets/setting_photos', $filename)) {
-							$setting->fav_icon=env('CDN_DOC_URL').'assets/setting_photos/'.$filename.'';
-						}
-					}
-				}
-			}
-            {
-				if(gettype($request->certificate_image) == "string"){
-					$setting->certificate_image = $request->certificate_image;
-				}
-				else{
-					if ($request->hasFile('certificate_image')) {
-						$file = $request->file('certificate_image');
-						$filename=time().'.'.$file->getClientOriginalExtension();
-						if ($file->move('assets/setting_photos', $filename)) {
-							$setting->certificate_image=env('CDN_DOC_URL').'assets/setting_photos/'.$filename.'';
-						}
-					}
-				}
-			}
+
+			$setting->logo_path = $request->logo_path;
+            $setting->logo_thumb_path = $request->logo_thumb_path;
+            $setting->fav_icon = $request->fav_icon;
+            $setting->certificate_image = $request->certificate_image;
 			$setting->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$setting, 200);

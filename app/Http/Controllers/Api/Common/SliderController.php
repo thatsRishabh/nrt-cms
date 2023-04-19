@@ -54,7 +54,7 @@ class SliderController extends Controller
 		} 
 		catch (\Throwable $e) {
 			Log::error($e);
-			return prepareResult(false,'Error while fatching Records' ,$e->getMessage(), 500);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
 	}
  
@@ -62,7 +62,7 @@ class SliderController extends Controller
 	{
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required',
-            'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+            // 'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
             'order_number'                      => 'numeric',
         ]);
 		if ($validation->fails()) {
@@ -74,13 +74,7 @@ class SliderController extends Controller
 			$sliderImage->name = $request->name;
             $sliderImage->menu_id = $request->menu_id;
             $sliderImage->order_number = $request->order_number;
-            if ($request->hasFile('image')) {
-				$file = $request->file('image');
-				$filename=time().'.'.$file->getClientOriginalExtension();
-				if ($file->move('assets/slider_photos', $filename)) {
-					$sliderImage->image=env('CDN_DOC_URL').'assets/slider_photos/'.$filename.'';
-				}
-			}
+			$sliderImage->image = $request->image;
 			$sliderImage->save();
 
 			DB::commit();
@@ -95,7 +89,7 @@ class SliderController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validation = Validator::make($request->all(), [
-			'name' => 'required',
+			'name'             => 'required',
             'order_number'                      => 'numeric',
 
 		]);
@@ -108,20 +102,7 @@ class SliderController extends Controller
             $sliderImage->name = $request->name;
             $sliderImage->menu_id = $request->menu_id;
             $sliderImage->order_number = $request->order_number;
-            {
-				if(gettype($request->image) == "string"){
-					$sliderImage->image = $request->image;
-				}
-				else{
-					if ($request->hasFile('image')) {
-						$file = $request->file('image');
-						$filename=time().'.'.$file->getClientOriginalExtension();
-						if ($file->move('assets/slider_photos', $filename)) {
-							$sliderImage->image=env('CDN_DOC_URL').'assets/slider_photos/'.$filename.'';
-						}
-					}
-				}
-			}
+            $sliderImage->image = $request->image;
 			$sliderImage->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$sliderImage, 200);

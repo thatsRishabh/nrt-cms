@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->integer('order_number')->nullable();
             $table->boolean('position_type')->comment('1 for Header, 2 for Footer')->nullable();
+            $table->boolean('status')->comment('1 Active, 2 for Deactive')->nullable();
+            $table->string('icon_path')->nullable();
             $table->timestamps();
         });
     }

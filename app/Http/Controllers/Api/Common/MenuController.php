@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Common;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-
+use Illuminate\Support\Str;
 use App\Models\Menu;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +19,8 @@ class MenuController extends Controller
 	{
 		try {
 
-			$query = Menu::select('*')->with('subMenus')->whereNull('parent_id')
+			$query = Menu::select('*')->with('subMenus')
+			->whereNull('parent_id')
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
@@ -28,6 +29,10 @@ class MenuController extends Controller
 			if(!empty($request->name))
 			{
 				$query->where('name', $request->name);
+			}
+			if(!empty($request->status))
+			{
+				$query->where('status',1);
 			}
 
 			if(!empty($request->per_page_record))
@@ -56,15 +61,70 @@ class MenuController extends Controller
 		} 
 		catch (\Throwable $e) {
 			Log::error($e);
-			return prepareResult(false,'Error while fatching Records' ,$e->getMessage(), 500);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
 	}
+
+	public function subMenus(Request $request)
+	{
+		try {
+
+			$query = Menu::select('*')
+			->whereNotNull('parent_id')
+			// ->whereNull('parent_id')
+			->orderBy('id', 'desc');
+			if(!empty($request->id))
+			{
+				$query->where('id', $request->id);
+			}
+			if(!empty($request->name))
+			{
+				$query->where('name', $request->name);
+			}
+			if(!empty($request->parent_id))
+			{
+				$query->where('parent_id', $request->parent_id);
+			}
+			if(!empty($request->status))
+			{
+				$query->where('status',1);
+			}
+
+			if(!empty($request->per_page_record))
+			{
+				$perPage = $request->per_page_record;
+				$page = $request->input('page', 1);
+				$total = $query->count();
+				$result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+				$pagination =  [
+					'data' => $result,
+					'total' => $total,
+					'current_page' => $page,
+					'per_page' => $perPage,
+					'last_page' => ceil($total / $perPage)
+				];
+				$query = $pagination;
+			}
+			else
+			{
+				$query = $query->get();
+			}
+
+			return prepareResult(true,'Records Fatched Successfully' ,$query, 200);
+
+		} 
+		catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+	}
+
     
 	public function store(Request $request)
 	{
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required|unique:menus,name,',
-            'slug'                      => 'required',
 			'position_type'             => 'numeric',
         ]);
 		if ($validation->fails()) {
@@ -75,9 +135,11 @@ class MenuController extends Controller
 			$menuPage = new Menu;
 			$menuPage->name = $request->name;
             $menuPage->parent_id = $request->parent_id;
-            $menuPage->slug = $request->slug;
+            $menuPage->slug = Str::slug($request->name);
             $menuPage->order_number = $request->order_number;
 			$menuPage->position_type = $request->position_type;
+			$menuPage->status = $request->status;
+			$menuPage->icon_path = $request->icon_path;
 			$menuPage->save();
 
 			DB::commit();
@@ -93,7 +155,6 @@ class MenuController extends Controller
 	{
 		$validation = Validator::make($request->all(), [
 			'name' => 'required|unique:menus,name,'.$id,
-            'slug'                      => 'required',
 			'position_type'             => 'numeric',
 		]);
 		if ($validation->fails()) {
@@ -104,9 +165,11 @@ class MenuController extends Controller
 			$menuPage= Menu::find($id);
 			$menuPage->name = $request->name;
             $menuPage->parent_id = $request->parent_id;
-            $menuPage->slug = $request->slug;
+            $menuPage->slug = Str::slug($request->name);
             $menuPage->order_number = $request->order_number;
 			$menuPage->position_type = $request->position_type;
+			$menuPage->status = $request->status;
+			$menuPage->icon_path = $request->icon_path;
 			$menuPage->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$menuPage, 200);

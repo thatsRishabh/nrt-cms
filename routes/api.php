@@ -30,6 +30,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 		 // menu Pages
 		 Route::controller(MenuController::class)->group(function () {
 			Route::post('menus', 'menus');
+			Route::post('sub-menus', 'subMenus');
 			Route::resource('menu', MenuController::class)->only([
 				'store','destroy','show' , 'update']);
 		});
@@ -41,11 +42,11 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 			Route::resource('service', ServiceController::class)->only([
 				'store','destroy','show' ]);
 		});
-
-		// services
+		
+		// AppSetting
 		Route::controller(AppSettingController::class)->group(function () {
 			Route::get('app-settings', 'appSettings');
-			Route::post('app-setting-update/{id?}', 'update');
+			Route::post('app-setting-update', 'update');
 		});
 
 		Route::controller(SliderController::class)->group(function () {
@@ -55,5 +56,8 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 				'store','destroy','show' ]);
 		});
 
+		Route::controller(FileUploadController::class)->group(function () {
+			Route::post('file-upload', 'store');
+		});
 	});
 });

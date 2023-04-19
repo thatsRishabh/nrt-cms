@@ -55,7 +55,7 @@ class ServiceController extends Controller
 		} 
 		catch (\Throwable $e) {
 			Log::error($e);
-			return prepareResult(false,'Error while fatching Records' ,$e->getMessage(), 500);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
 	}
  
@@ -63,7 +63,7 @@ class ServiceController extends Controller
 	{
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required',
-            'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+            // 'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
         ]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
@@ -75,13 +75,7 @@ class ServiceController extends Controller
             $servicePage->menu_id = $request->menu_id;
             $servicePage->order_number = $request->order_number;
             $servicePage->description = $request->description;
-            if ($request->hasFile('image')) {
-				$file = $request->file('image');
-				$filename=time().'.'.$file->getClientOriginalExtension();
-				if ($file->move('assets/service_photos', $filename)) {
-					$servicePage->image=env('CDN_DOC_URL').'assets/service_photos/'.$filename.'';
-				}
-			}
+			$servicePage->image = $request->image;
 			$servicePage->save();
 
 			DB::commit();
@@ -109,20 +103,7 @@ class ServiceController extends Controller
             $servicePage->menu_id = $request->menu_id;
             $servicePage->order_number = $request->order_number;
             $servicePage->description = $request->description;
-            {
-				if(gettype($request->image) == "string"){
-					$servicePage->image = $request->image;
-				}
-				else{
-					if ($request->hasFile('image')) {
-						$file = $request->file('image');
-						$filename=time().'.'.$file->getClientOriginalExtension();
-						if ($file->move('assets/service_photos', $filename)) {
-							$servicePage->image=env('CDN_DOC_URL').'assets/service_photos/'.$filename.'';
-						}
-					}
-				}
-			}
+			$servicePage->image = $request->image;
 			$servicePage->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$servicePage, 200);
