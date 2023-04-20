@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
+    /**	
      * Run the migrations.
      */
     public function up(): void
@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreign('menu_id')->references('id')->on('menus')->comment('To identify menus')->onDelete('cascade');
             $table->string('name');
             $table->string('image')->nullable();
+            $table->string('icon_image_path')->nullable();
+            $table->string('redirect_url')->nullable();
             $table->integer('order_number')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

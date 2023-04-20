@@ -4,21 +4,21 @@ namespace App\Http\Controllers\Api\Common;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
-use App\Models\Service;
+use App\Models\Portfolio;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class ServiceController extends Controller
+class PortfolioController extends Controller
 {
     //
-
-    public function services(Request $request)
+    public function portfolios(Request $request)
 	{
 		try {
 
-			$query = Service::select('*')
+			$query = Portfolio::select('*')
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
@@ -63,25 +63,25 @@ class ServiceController extends Controller
 	{
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required',
-            // 'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+        
         ]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
 		} 
 		DB::beginTransaction();
 		try { 
-			$servicePage = new Service;
-			$servicePage->name = $request->name;
-            $servicePage->menu_id = $request->menu_id;
-            $servicePage->order_number = $request->order_number;
-            $servicePage->description = $request->description;
-			$servicePage->image = $request->image;
-			$servicePage->icon_image_path = $request->icon_image_path;
-			$servicePage->redirect_url = $request->redirect_url;
-			$servicePage->save();
+			$portfolioData = new Portfolio;
+			$portfolioData->name = $request->name;
+            $portfolioData->project_type = $request->project_type;
+            $portfolioData->slug =Str::slug($request->name);
+			$portfolioData->image = $request->image;
+            $portfolioData->date = $request->date;
+            $portfolioData->url = $request->url;
+            $portfolioData->description = $request->description;
+			$portfolioData->save();
 
 			DB::commit();
-			return prepareResult(true,'Your data has been saved successfully' , $servicePage, 200);
+			return prepareResult(true,'Your data has been saved successfully' , $portfolioData, 200);
 
 		} catch (\Throwable $e) {
 			Log::error($e);
@@ -92,7 +92,8 @@ class ServiceController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validation = Validator::make($request->all(), [
-			'name' => 'required',
+			'name'             => 'required',
+         
 
 		]);
 		if ($validation->fails()) {
@@ -100,17 +101,17 @@ class ServiceController extends Controller
 		} 
 		DB::beginTransaction();
 		try {      
-			$servicePage= Service::find($id);
-			$servicePage->name = $request->name;
-            $servicePage->menu_id = $request->menu_id;
-            $servicePage->order_number = $request->order_number;
-            $servicePage->description = $request->description;
-			$servicePage->image = $request->image;
-			$servicePage->icon_image_path = $request->icon_image_path;
-			$servicePage->redirect_url = $request->redirect_url;
-			$servicePage->save();
+			$portfolioData= Portfolio::find($id);
+            $portfolioData->name = $request->name;
+            $portfolioData->project_type = $request->project_type;
+            $portfolioData->slug =Str::slug($request->name);
+			$portfolioData->image = $request->image;
+            $portfolioData->date = $request->date;
+            $portfolioData->url = $request->url;
+            $portfolioData->description = $request->description;
+			$portfolioData->save();
 			DB::commit();
-			return prepareResult(true,'Your data has been Updated successfully' ,$servicePage, 200);
+			return prepareResult(true,'Your data has been Updated successfully' ,$portfolioData, 200);
 		} catch (\Throwable $e) {
 			Log::error($e);
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
@@ -120,10 +121,10 @@ class ServiceController extends Controller
 	public function show($id)
 	{
 		try {
-			$servicePage = Service::find($id);
-			if($servicePage)
+			$portfolioData = Portfolio::find($id);
+			if($portfolioData)
 			{
-				return prepareResult(true,'Record Fatched Successfully' ,$servicePage, 200); 
+				return prepareResult(true,'Record Fatched Successfully' ,$portfolioData, 200); 
 			}
 			return prepareResult(false,'Record not found' ,[], 500);
 		} catch (\Throwable $e) {
@@ -135,10 +136,10 @@ class ServiceController extends Controller
 	public function destroy($id)
 	{
 		try {
-			$servicePage = Service::find($id);
-			if($servicePage)
+			$portfolioData = Portfolio::find($id);
+			if($portfolioData)
 			{
-				$result=$servicePage->delete();
+				$result=$portfolioData->delete();
 				return prepareResult(true,'Record Deleted Successfully' ,$result, 200); 
 			}
 			return prepareResult(false,'Record Not Found' ,[], 500);
@@ -147,5 +148,4 @@ class ServiceController extends Controller
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
 	}
-
 }

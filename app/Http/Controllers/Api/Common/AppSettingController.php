@@ -30,7 +30,7 @@ class AppSettingController extends Controller
 	{
 		$validation = Validator::make($request->all(), [
             'app_name'                        => 'required',
-            'logo_path'                       => $request->hasFile('logo_path') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+            // 'logo_path'                       => $request->hasFile('logo_path') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
             'call_us'                         => 'numeric',
             'mail_us'                         => 'email',
             'org_number'                      => 'numeric',
@@ -76,7 +76,6 @@ class AppSettingController extends Controller
             $setting->app_store_url = $request->app_store_url;
             $setting->support_email = $request->support_email;
             $setting->support_contact_number = $request->support_contact_number;
-
 			$setting->logo_path = $request->logo_path;
             $setting->logo_thumb_path = $request->logo_thumb_path;
             $setting->fav_icon = $request->fav_icon;

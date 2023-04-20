@@ -38,9 +38,8 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 		// services
 		Route::controller(ServiceController::class)->group(function () {
 			Route::post('services', 'services');
-			Route::post('service-update/{id?}', 'update');
 			Route::resource('service', ServiceController::class)->only([
-				'store','destroy','show' ]);
+				'store','destroy','show','update' ]);
 		});
 		
 		// AppSetting
@@ -48,14 +47,37 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 			Route::get('app-settings', 'appSettings');
 			Route::post('app-setting-update', 'update');
 		});
-
+		// slider
 		Route::controller(SliderController::class)->group(function () {
 			Route::post('sliders', 'sliders');
-			Route::post('slider-update/{id?}', 'update');
 			Route::resource('slider', SliderController::class)->only([
-				'store','destroy','show' ]);
+				'store','destroy','show','update'  ]);
 		});
 
+		// portfolios
+		Route::controller(PortfolioController::class)->group(function () {
+			Route::post('portfolios', 'portfolios');
+			Route::resource('portfolio', PortfolioController::class)->only([
+				'store','destroy','show','update'  ]);
+		});
+		// SeoKey
+		Route::controller(SeoKeyController::class)->group(function () {
+			Route::post('seo-keys', 'seoKeys');
+			Route::resource('seo-key', SeoKeyController::class)->only([
+				'store','destroy','show','update'  ]);
+		});
+		// teams
+		Route::controller(TeamController::class)->group(function () {
+			Route::post('teams', 'teams');
+			Route::resource('team', TeamController::class)->only([
+				'store','destroy','show','update'  ]);
+		});
+		// testimonials
+		Route::controller(TestimonialController::class)->group(function () {
+			Route::post('testimonials', 'testimonials');
+			Route::resource('testimonial', TestimonialController::class)->only([
+				'store','destroy','show','update'  ]);
+		});				
 		Route::controller(FileUploadController::class)->group(function () {
 			Route::post('file-upload', 'store');
 		});
