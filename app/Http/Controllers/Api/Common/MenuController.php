@@ -124,7 +124,7 @@ class MenuController extends Controller
 	public function store(Request $request)
 	{
         $validation = Validator::make($request->all(),  [
-            'name'                      => 'required|unique:menus,name,',
+            'name'                      => 'required',
 			'position_type'             => 'numeric',
         ]);
 		if ($validation->fails()) {
@@ -154,7 +154,7 @@ class MenuController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validation = Validator::make($request->all(), [
-			'name' => 'required|unique:menus,name,'.$id,
+			'name'                      => 'required',
 			'position_type'             => 'numeric',
 		]);
 		if ($validation->fails()) {

@@ -83,3 +83,15 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 		});
 	});
 });
+
+Route::namespace('App\Http\Controllers\Api')->group(function () {
+	Route::controller(FrontDataController::class)->group(function () {
+		Route::get('front/app-setting', 'appSettings');
+		Route::post('front/menus', 'menus');
+		Route::post('front/portfolios', 'portfolios');
+		Route::post('front/services', 'services');
+		Route::post('front/sliders', 'sliders');
+		Route::post('front/teams', 'teams');
+		Route::post('front/testimonials', 'testimonials');
+	});
+});
