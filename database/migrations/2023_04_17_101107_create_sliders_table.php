@@ -15,9 +15,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('menu_id')->nullable();
             $table->foreign('menu_id')->references('id')->on('menus')->comment('To identify menus')->onDelete('cascade');
-            $table->string('name');
+            $table->string('title');
+            $table->string('sub_title')->nullable();
+            $table->string('button_test')->nullable();
+            $table->string('url')->nullable();
+            $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->integer('order_number')->nullable();
+            $table->boolean('status')->comment('1 for active , 2 for inactive')->nullable();
             $table->timestamps();
         });
     }

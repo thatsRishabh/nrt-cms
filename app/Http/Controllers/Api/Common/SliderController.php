@@ -57,11 +57,11 @@ class SliderController extends Controller
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
 	}
- 
+
 	public function store(Request $request)
 	{
         $validation = Validator::make($request->all(),  [
-            'name'                      => 'required',
+            'title'                      => 'required',
             // 'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
             'order_number'                      => 'numeric',
         ]);
@@ -71,9 +71,14 @@ class SliderController extends Controller
 		DB::beginTransaction();
 		try { 
 			$sliderImage = new Slider;
-			$sliderImage->name = $request->name;
+			$sliderImage->title = $request->title;
+			$sliderImage->sub_title = $request->sub_title;
+			$sliderImage->button_test = $request->button_test;
+			$sliderImage->url = $request->url;
+			$sliderImage->description = $request->description;
             $sliderImage->menu_id = $request->menu_id;
             $sliderImage->order_number = $request->order_number;
+			$sliderImage->status = $request->status;
 			$sliderImage->image = $request->image;
 			$sliderImage->save();
 
@@ -89,7 +94,7 @@ class SliderController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validation = Validator::make($request->all(), [
-			'name'             => 'required',
+			'title'             => 'required',
             'order_number'                      => 'numeric',
 
 		]);
@@ -99,10 +104,15 @@ class SliderController extends Controller
 		DB::beginTransaction();
 		try {      
 			$sliderImage= Slider::find($id);
-            $sliderImage->name = $request->name;
+			$sliderImage->title = $request->title;
+			$sliderImage->sub_title = $request->sub_title;
+			$sliderImage->button_test = $request->button_test;
+			$sliderImage->url = $request->url;
+			$sliderImage->description = $request->description;
             $sliderImage->menu_id = $request->menu_id;
             $sliderImage->order_number = $request->order_number;
             $sliderImage->image = $request->image;
+			$sliderImage->status = $request->status;
 			$sliderImage->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$sliderImage, 200);

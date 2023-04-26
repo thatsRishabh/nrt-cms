@@ -91,9 +91,7 @@ class SeoKeyController extends Controller
      public function update(Request $request, $id)
      {
          $validation = Validator::make($request->all(), [
-             'page_name'             => 'required',
-           
- 
+             'page_name'             => 'required',     
          ]);
          if ($validation->fails()) {
              return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
