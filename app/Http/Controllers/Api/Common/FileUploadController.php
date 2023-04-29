@@ -67,7 +67,8 @@ class FileUploadController extends Controller
                     $fileSave = $this->CreateFileUploadRecord($file_name,$file_type,$file_location,$file_size);
                     
                     $fileArray[] = [
-                        'file_location'         => env('CDN_DOC_URL').$destinationPath.$fileName,
+                        // 'file_location'         => env('CDN_DOC_URL').$destinationPath.$fileName,
+                        'file_location'         => $destinationPath.$fileName,
                         'file_extension'    => $value->getClientOriginalExtension(),
                         'file_name' => $value->getClientOriginalName(),
                     ];
@@ -97,7 +98,8 @@ class FileUploadController extends Controller
                 $fileSave = $this->CreateFileUploadRecord($file_name,$file_type,$file_location,$file_size);
 
                 $fileInfo = [
-                    'file_location'          => env('CDN_DOC_URL').$destinationPath.$fileName,
+                    // 'file_location'          => env('CDN_DOC_URL').$destinationPath.$fileName,
+                     'file_location'          => $destinationPath.$fileName,
                     'file_extension'         => $file->getClientOriginalExtension(),
                     'file_name'              => $file->getClientOriginalName(),
                 ];

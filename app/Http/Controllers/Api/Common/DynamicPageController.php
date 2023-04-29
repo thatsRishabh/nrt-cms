@@ -5,20 +5,20 @@ namespace App\Http\Controllers\Api\Common;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Team;
+use App\Models\DynamicPage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class TeamController extends Controller
+class DynamicPageController extends Controller
 {
     //
-     //
-     public function teams(Request $request)
+    public function dynamicPages(Request $request)
      {
          try {
  
-             $query = Team::select('*')
+             $query = DynamicPage::select('*')
+             ->with('menuDetail','subMenuDetail')
              ->orderBy('id', 'desc');
              if(!empty($request->id))
              {
@@ -58,32 +58,41 @@ class TeamController extends Controller
              return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
          }
      }
-
+  
      public function store(Request $request)
      {
          $validation = Validator::make($request->all(),  [
-             'name'                      => 'required',
-             // 'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
-             'order_number'                      => 'numeric',
+             'title'                      => 'required',
+          
          ]);
          if ($validation->fails()) {
              return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
          } 
          DB::beginTransaction();
          try { 
-             $teamInfo = new Team;
-             $teamInfo->name = $request->name;
-             $teamInfo->title = $request->title;
-             $teamInfo->sub_title = $request->sub_title;
-             $teamInfo->designation = $request->designation;
-             $teamInfo->profile_image_path = $request->profile_image_path;
-             $teamInfo->role_description = $request->role_description;
-             $teamInfo->no_of_developers = $request->no_of_developers;
-             $teamInfo->status = $request->status;
-             $teamInfo->save();
+            if(!empty($request->menu_id)) {
+                $dynamicInfos= DynamicPage::where('menu_id',$request->menu_id)->where('sub_menu_id',$request->sub_menu_id)->first();
+                if(empty($dynamicInfos))
+                {
+                    $dynamicInfos = new DynamicPage;
+                }
+            }
+            else {
+                $dynamicInfos = new DynamicPage;
+            }
+
+             $dynamicInfos->menu_id = $request->menu_id;
+             $dynamicInfos->sub_menu_id = $request->sub_menu_id;
+             $dynamicInfos->title = $request->title;
+             $dynamicInfos->sub_title = $request->sub_title;
+             $dynamicInfos->banner_image_path = $request->banner_image_path;
+             $dynamicInfos->document_path = $request->document_path;
+             $dynamicInfos->description = $request->description;
+             $dynamicInfos->status = $request->status;
+             $dynamicInfos->save();
  
              DB::commit();
-             return prepareResult(true,'Your data has been saved successfully' , $teamInfo, 200);
+             return prepareResult(true,'Your data has been saved successfully' , $dynamicInfos, 200);
  
          } catch (\Throwable $e) {
              Log::error($e);
@@ -94,27 +103,38 @@ class TeamController extends Controller
      public function update(Request $request, $id)
      {
          $validation = Validator::make($request->all(), [
-             'name'             => 'required',
-             'order_number'                      => 'numeric',
- 
+             'title'             => 'required',     
          ]);
          if ($validation->fails()) {
              return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
          } 
          DB::beginTransaction();
-         try {      
-             $teamInfo= Team::find($id);
-             $teamInfo->name = $request->name;
-             $teamInfo->title = $request->title;
-             $teamInfo->sub_title = $request->sub_title;
-             $teamInfo->designation = $request->designation;
-             $teamInfo->profile_image_path = $request->profile_image_path;
-             $teamInfo->role_description = $request->role_description;
-             $teamInfo->no_of_developers = $request->no_of_developers;
-             $teamInfo->status = $request->status;
-             $teamInfo->save();
+         try {   
+            
+            // if(!empty($request->menu_id)) {
+            //     $checkId= DynamicPage::where('menu_id',$request->menu_id)->where('sub_menu_id',$request->sub_menu_id)->first();
+            //     if($checkId)
+            //     {
+            //         return prepareResult(false,'Record Already exists with given menu!',[],500);
+            //     }
+            // }
+
+            $dynamicInfos = DynamicPage::find($id);
+            if (!is_object($dynamicInfos)) {
+                return prepareResult(false,'Record Not Found!',[],500);
+            }
+
+             $dynamicInfos->menu_id = $request->menu_id;
+             $dynamicInfos->sub_menu_id = $request->sub_menu_id;
+             $dynamicInfos->title = $request->title;
+             $dynamicInfos->sub_title = $request->sub_title;
+             $dynamicInfos->banner_image_path = $request->banner_image_path;
+             $dynamicInfos->document_path = $request->document_path;
+             $dynamicInfos->description = $request->description;
+             $dynamicInfos->status = $request->status;
+             $dynamicInfos->save();
              DB::commit();
-             return prepareResult(true,'Your data has been Updated successfully' ,$teamInfo, 200);
+             return prepareResult(true,'Your data has been Updated successfully' ,$dynamicInfos, 200);
          } catch (\Throwable $e) {
              Log::error($e);
              return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
@@ -124,10 +144,10 @@ class TeamController extends Controller
      public function show($id)
      {
          try {
-             $teamInfo = Team::find($id);
-             if($teamInfo)
+             $dynamicInfos = DynamicPage::find($id);
+             if($dynamicInfos)
              {
-                 return prepareResult(true,'Record Fatched Successfully' ,$teamInfo, 200); 
+                 return prepareResult(true,'Record Fatched Successfully' ,$dynamicInfos, 200); 
              }
              return prepareResult(false,'Record not found' ,[], 500);
          } catch (\Throwable $e) {
@@ -139,10 +159,10 @@ class TeamController extends Controller
      public function destroy($id)
      {
          try {
-             $teamInfo = Team::find($id);
-             if($teamInfo)
+             $dynamicInfos = DynamicPage::find($id);
+             if($dynamicInfos)
              {
-                 $result=$teamInfo->delete();
+                 $result=$dynamicInfos->delete();
                  return prepareResult(true,'Record Deleted Successfully' ,$result, 200); 
              }
              return prepareResult(false,'Record Not Found' ,[], 500);

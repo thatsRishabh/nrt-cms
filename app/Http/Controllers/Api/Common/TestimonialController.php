@@ -77,6 +77,7 @@ class TestimonialController extends Controller
              $testimony->designation = $request->designation;
              $testimony->profile_image_path = $request->profile_image_path;
              $testimony->rating = $request->rating;
+             $testimony->status = $request->status;
              $testimony->save();
              DB::commit();
              return prepareResult(true,'Your data has been saved successfully' , $testimony, 200);
@@ -105,6 +106,7 @@ class TestimonialController extends Controller
              $testimony->designation = $request->designation;
              $testimony->profile_image_path = $request->profile_image_path;
              $testimony->rating = $request->rating;
+             $testimony->status = $request->status;
              $testimony->save();
              DB::commit();
              return prepareResult(true,'Your data has been Updated successfully' ,$testimony, 200);

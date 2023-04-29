@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('designation')->nullable();
             $table->string('profile_image_path')->nullable();
             $table->integer('rating')->nullable();
+            $table->boolean('status')->comment('1 for active , 2 for inactive')->nullable();
             $table->timestamps();
         });
     }

@@ -19,6 +19,7 @@ class ServiceController extends Controller
 		try {
 
 			$query = Service::select('*')
+			->with('menuDetail','subMenuDetail')
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
@@ -73,11 +74,13 @@ class ServiceController extends Controller
 			$servicePage = new Service;
 			$servicePage->name = $request->name;
             $servicePage->menu_id = $request->menu_id;
+			$servicePage->sub_menu_id = $request->sub_menu_id;
             $servicePage->order_number = $request->order_number;
             $servicePage->description = $request->description;
 			$servicePage->image = $request->image;
 			$servicePage->icon_image_path = $request->icon_image_path;
 			$servicePage->redirect_url = $request->redirect_url;
+			$servicePage->status = $request->status;
 			$servicePage->save();
 
 			DB::commit();
@@ -103,11 +106,13 @@ class ServiceController extends Controller
 			$servicePage= Service::find($id);
 			$servicePage->name = $request->name;
             $servicePage->menu_id = $request->menu_id;
+			$servicePage->sub_menu_id = $request->sub_menu_id;
             $servicePage->order_number = $request->order_number;
             $servicePage->description = $request->description;
 			$servicePage->image = $request->image;
 			$servicePage->icon_image_path = $request->icon_image_path;
 			$servicePage->redirect_url = $request->redirect_url;
+			$servicePage->status = $request->status;
 			$servicePage->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$servicePage, 200);

@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Menu;
+use App\Models\Blog;
 use App\Models\AppSetting;
 use App\Models\Portfolio;
 use App\Models\Service;
 use App\Models\Slider;
 use App\Models\Team;
 use App\Models\Testimonial;
+use App\Models\DynamicPage;
 
 class FrontDataController extends Controller
 {
@@ -307,4 +309,97 @@ class FrontDataController extends Controller
              return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
          }
      }
+
+	 public function dynamicPage($slug)
+    {
+        try 
+        {
+            $data = Menu::where('slug',$slug)->first();
+            if(empty($data))
+            {
+				return prepareResult(false,'Menu doesnot exist!',[],500);
+            }
+            $dynamicPage = DynamicPage::where('sub_menu_id',$data->id)->with('menuDetail','subMenuDetail')->first();
+            if(empty($dynamicPage))
+            {
+                $dynamicPage = DynamicPage::where('menu_id',$data->id)->with('menuDetail','subMenuDetail')->first();
+            }
+            $data['dynamic_page'] = $dynamicPage;
+            DB::commit();
+			return prepareResult(true,'Dynamic page fetched Successfully.' ,$data, 200);
+        } catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+    }
+
+	public function blogs(Request $request)
+    {
+		try {
+
+            $query = Blog::select('*')
+            ->orderBy('id', 'desc');
+            if(!empty($request->id))
+            {
+                $query->where('id', $request->id);
+            }
+            if(!empty($request->name))
+            {
+                $query->where('name', $request->name);
+            }
+			if(!empty($request->title))
+            {
+                $query->where('title', $request->title);
+            }
+            if(!empty($request->slug))
+            {
+                $query->where('slug', $request->slug);
+            }
+            if(!empty($request->per_page_record))
+            {
+                $perPage = $request->per_page_record;
+                $page = $request->input('page', 1);
+                $total = $query->count();
+                $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+                $pagination =  [
+                    'data' => $result,
+                    'total' => $total,
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'last_page' => ceil($total / $perPage)
+                ];
+                $query = $pagination;
+            }
+            else
+            {
+                $query = $query->get();
+            }
+
+            return prepareResult(true,'Records Fatched Successfully' ,$query, 200);
+
+        } 
+        catch (\Throwable $e) {
+            Log::error($e);
+            return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+        }
+    }
+
+    public function blog($slug)
+    {
+        try 
+        {
+            $blog = Blog::where('slug',$slug)->first();
+            if(empty($blog))
+            {
+				return prepareResult(false,'Record Not Found',[],500);
+            }
+            $blog->update(['views'=>$blog->views + 1]);
+			return prepareResult(true,'Blogs Detail Fetched!' ,$blog, 200);
+        }
+		catch (\Throwable $e) {
+            Log::error($e);
+            return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+        }
+    }
 }

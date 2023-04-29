@@ -78,6 +78,7 @@ class PortfolioController extends Controller
             $portfolioData->date = $request->date;
             $portfolioData->url = $request->url;
             $portfolioData->description = $request->description;
+			$portfolioData->status = $request->status;
 			$portfolioData->save();
 
 			DB::commit();
@@ -109,6 +110,7 @@ class PortfolioController extends Controller
             $portfolioData->date = $request->date;
             $portfolioData->url = $request->url;
             $portfolioData->description = $request->description;
+			$portfolioData->status = $request->status;
 			$portfolioData->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$portfolioData, 200);

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('profile_image_path')->nullable();
             $table->string('role_description')->nullable();
             $table->integer('no_of_developers')->nullable();
+            $table->boolean('status')->comment('1 for active , 2 for inactive')->nullable();
             $table->timestamps();
         });
     }

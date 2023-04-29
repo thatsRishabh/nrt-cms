@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('url')->nullable();
             $table->string('description')->nullable();
             $table->string('image')->nullable();
+            $table->boolean('status')->comment('1 for active , 2 for inactive')->nullable();
             $table->timestamps();
         });
     }
