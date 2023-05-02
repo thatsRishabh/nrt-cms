@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Menu;
+use App\Models\ContactUs;
 use App\Models\Blog;
 use App\Models\AppSetting;
 use App\Models\Portfolio;
@@ -25,7 +26,7 @@ class FrontDataController extends Controller
 	{
 		try {
 
-			$query = Menu::select('*')->with('subMenus')
+			$query = Menu::select('*')->where('status',1)->with('subMenus')
 			->whereNull('parent_id')
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
@@ -33,9 +34,9 @@ class FrontDataController extends Controller
 				$query->where('id', $request->id);
 			}
 			if(!empty($request->name))
-			{
-				$query->where('name', $request->name);
-			}
+            {
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
 			if(!empty($request->status))
 			{
 				$query->where('status',1);
@@ -89,16 +90,16 @@ class FrontDataController extends Controller
 	{
 		try {
 
-			$query = Portfolio::select('*')
+			$query = Portfolio::select('*')->where('status',1)
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
 				$query->where('id', $request->id);
 			}
 			if(!empty($request->name))
-			{
-				$query->where('name', $request->name);
-			}
+            {
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
 
 			if(!empty($request->per_page_record))
 			{
@@ -134,16 +135,16 @@ class FrontDataController extends Controller
 	{
 		try {
 
-			$query = Service::select('*')
+			$query = Service::select('*')->where('status',1)
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
 				$query->where('id', $request->id);
 			}
 			if(!empty($request->name))
-			{
-				$query->where('name', $request->name);
-			}
+            {
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
 
 			if(!empty($request->per_page_record))
 			{
@@ -179,16 +180,16 @@ class FrontDataController extends Controller
 	{
 		try {
 
-			$query = Slider::select('*')
+			$query = Slider::select('*')->where('status',1)
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
 				$query->where('id', $request->id);
 			}
 			if(!empty($request->name))
-			{
-				$query->where('name', $request->name);
-			}
+            {
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
 
 			if(!empty($request->per_page_record))
 			{
@@ -224,16 +225,16 @@ class FrontDataController extends Controller
 	{
 		try {
 
-			$query = Team::select('*')
+			$query = Team::select('*')->where('status',1)
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
 				$query->where('id', $request->id);
 			}
 			if(!empty($request->name))
-			{
-				$query->where('name', $request->name);
-			}
+            {
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
 
 			if(!empty($request->per_page_record))
 			{
@@ -269,16 +270,16 @@ class FrontDataController extends Controller
      {
          try {
  
-             $query = Testimonial::select('*')
+             $query = Testimonial::select('*')->where('status',1)
              ->orderBy('id', 'desc');
              if(!empty($request->id))
              {
                  $query->where('id', $request->id);
              }
              if(!empty($request->name))
-             {
-                 $query->where('name', $request->name);
-             }
+            {
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
  
              if(!empty($request->per_page_record))
              {
@@ -337,19 +338,19 @@ class FrontDataController extends Controller
     {
 		try {
 
-            $query = Blog::select('*')
+            $query = Blog::select('*')->where('status',1)
             ->orderBy('id', 'desc');
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
             }
-            if(!empty($request->name))
+			if(!empty($request->name))
             {
-                $query->where('name', $request->name);
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
             }
 			if(!empty($request->title))
             {
-                $query->where('title', $request->title);
+                $query->where('title', 'LIKE', '%'.$request->title.'%');
             }
             if(!empty($request->slug))
             {
@@ -389,7 +390,7 @@ class FrontDataController extends Controller
     {
         try 
         {
-            $blog = Blog::where('slug',$slug)->first();
+            $blog = Blog::where('slug',$slug)->where('status',1)->first();
             if(empty($blog))
             {
 				return prepareResult(false,'Record Not Found',[],500);
@@ -402,4 +403,32 @@ class FrontDataController extends Controller
             return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
         }
     }
+
+	public function ContactUs(Request $request)
+	{
+		$validation = Validator::make($request->all(),  [
+			'name'                         => 'required',
+			'message'                      => 'required',
+		 
+		]);
+		if ($validation->fails()) {
+			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
+		} 
+		DB::beginTransaction();
+		try { 
+			$ContactUsData = new ContactUs;
+			$ContactUsData->name = $request->name;
+			$ContactUsData->email = $request->email;
+			$ContactUsData->message = $request->message;
+			$ContactUsData->mobile_number = $request->mobile_number;
+			$ContactUsData->save();
+
+			DB::commit();
+			return prepareResult(true,'Your data has been saved successfully' , $ContactUsData, 200);
+
+		} catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+	}
 }

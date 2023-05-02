@@ -83,6 +83,12 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 			Route::post('blogs', 'blogs');
 			Route::resource('blog', BlogController::class)->only([
 				'store','destroy','show','update'  ]);
+		});	
+		// contactUs
+		Route::controller(ContactUsontroller::class)->group(function () {
+			Route::post('contact-uss', 'contactUs');
+			Route::resource('contact-us', ContactUsontroller::class)->only([
+				'destroy','show',  ]);
 		});			
 		// DynamicPage
 		Route::controller(DynamicPageController::class)->group(function () {
@@ -90,7 +96,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 			Route::resource('dynamic-page', DynamicPageController::class)->only([
 				'store','destroy','show','update'  ]);
 		});		
-
+		
 		Route::controller(FileUploadController::class)->group(function () {
 			Route::post('file-upload', 'store');
 		});
@@ -107,6 +113,7 @@ Route::namespace('App\Http\Controllers\Api')->group(function () {
 		Route::post('front/teams', 'teams');
 		Route::post('front/testimonials', 'testimonials');
 		Route::post('front/blogs', 'blogs');
+		Route::post('front/contact-us', 'ContactUs');
 		Route::post('front/blog/{slug?}', 'blog');
 		Route::post('front/dynamic-page/{slug?}', 'dynamicPage');
 	});

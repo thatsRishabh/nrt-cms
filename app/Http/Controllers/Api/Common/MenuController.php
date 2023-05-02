@@ -27,14 +27,21 @@ class MenuController extends Controller
 				$query->where('id', $request->id);
 			}
 			if(!empty($request->name))
-			{
-				$query->where('name', $request->name);
-			}
+            {
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
+			// if(!empty($request->status))
+			// {
+			// 	$query->where('status',1);
+			// }
 			if(!empty($request->status))
 			{
-				$query->where('status',1);
+				$query->where('status',$request->status);
 			}
-
+			if(!empty($request->position_type))
+			{
+				$query->where('position_type',$request->position_type);
+			}
 			if(!empty($request->per_page_record))
 			{
 				$perPage = $request->per_page_record;
@@ -78,16 +85,24 @@ class MenuController extends Controller
 				$query->where('id', $request->id);
 			}
 			if(!empty($request->name))
-			{
-				$query->where('name', $request->name);
-			}
+            {
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
 			if(!empty($request->parent_id))
 			{
 				$query->where('parent_id', $request->parent_id);
 			}
+			// if(!empty($request->status))
+			// {
+			// 	$query->where('status',1);
+			// }
 			if(!empty($request->status))
 			{
-				$query->where('status',1);
+				$query->where('status',$request->status);
+			}
+			if(!empty($request->position_type))
+			{
+				$query->where('position_type',$request->position_type);
 			}
 
 			if(!empty($request->per_page_record))
@@ -125,7 +140,9 @@ class MenuController extends Controller
 	{
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required',
-			'position_type'             => 'numeric',
+			'status'             => 'required|numeric',
+			'order_number'             => 'required|numeric',
+			'position_type'             => 'required|numeric',
         ]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
@@ -155,7 +172,9 @@ class MenuController extends Controller
 	{
 		$validation = Validator::make($request->all(), [
 			'name'                      => 'required',
-			'position_type'             => 'numeric',
+			'status'                   => 'required|numeric',
+			'order_number'             => 'required|numeric',
+			'position_type'             => 'required|numeric',
 		]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);

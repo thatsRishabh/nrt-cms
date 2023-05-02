@@ -26,9 +26,12 @@ class PortfolioController extends Controller
 			}
 			if(!empty($request->name))
 			{
-				$query->where('name', $request->name);
+				$query->where('name', 'LIKE', '%'.$request->name.'%');
 			}
-
+			if(!empty($request->status))
+			{
+				$query->where('status',$request->status);
+			}
 			if(!empty($request->per_page_record))
 			{
 				$perPage = $request->per_page_record;

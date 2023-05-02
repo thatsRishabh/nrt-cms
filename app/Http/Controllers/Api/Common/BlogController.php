@@ -26,12 +26,16 @@ class BlogController extends Controller
             }
             if(!empty($request->title))
             {
-                $query->where('title', $request->title);
+                $query->where('title', 'LIKE', '%'.$request->title.'%');
             }
             if(!empty($request->slug))
             {
                 $query->where('slug', $request->slug);
             }
+            if(!empty($request->status))
+			{
+				$query->where('status',$request->status);
+			}
 
             if(!empty($request->per_page_record))
             {
