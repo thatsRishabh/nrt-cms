@@ -89,7 +89,25 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 			Route::post('contact-uss', 'contactUs');
 			Route::resource('contact-us', ContactUsontroller::class)->only([
 				'destroy','show',  ]);
-		});			
+		});	
+		// AboutUsHighlights
+		Route::controller(AboutUsHighlightsController::class)->group(function () {
+			Route::post('about-us-highlights', 'highlights');
+			Route::resource('about-us-highlight', AboutUsHighlightsController::class)->only([
+				'store','destroy','show','update'  ]);
+		});	
+		// AboutUsTestimony
+		Route::controller(AboutUsTestimonycontroller::class)->group(function () {
+			Route::post('about-us-testimonies', 'aboutUsTestimonies');
+			Route::resource('about-us-testimony', AboutUsTestimonycontroller::class)->only([
+				'store','destroy','show','update'  ]);
+		});	
+		// Brand
+		Route::controller(BrandController::class)->group(function () {
+			Route::post('brands', 'brands');
+			Route::resource('brand', BrandController::class)->only([
+				'store','destroy','show','update'  ]);
+		});				
 		// DynamicPage
 		Route::controller(DynamicPageController::class)->group(function () {
 			Route::post('dynamic-pages', 'dynamicPages');
@@ -113,8 +131,11 @@ Route::namespace('App\Http\Controllers\Api')->group(function () {
 		Route::post('front/teams', 'teams');
 		Route::post('front/testimonials', 'testimonials');
 		Route::post('front/blogs', 'blogs');
-		Route::post('front/contact-us', 'ContactUs');
 		Route::post('front/blog/{slug?}', 'blog');
+		Route::post('front/about-us-highlights', 'highlights');
+		Route::post('front/about-us-testimonies', 'aboutUsTestimonies');
+		Route::post('front/brands', 'brands');
+		Route::post('front/contact-us', 'ContactUs');
 		Route::post('front/dynamic-page/{slug?}', 'dynamicPage');
 	});
 });

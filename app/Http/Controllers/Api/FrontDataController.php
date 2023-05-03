@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Menu;
+use App\Models\AboutUsHighlight;
+use App\Models\AboutUsTestimony;
+use App\Models\Brand;
 use App\Models\ContactUs;
 use App\Models\Blog;
 use App\Models\AppSetting;
@@ -431,4 +434,140 @@ class FrontDataController extends Controller
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
 	}
+
+	public function highlights(Request $request)
+	{
+		try {
+
+			$query = AboutUsHighlight::select('*')->where('status',1)
+			->orderBy('id', 'desc');
+			if(!empty($request->id))
+			{
+				$query->where('id', $request->id);
+			}
+			if(!empty($request->name))
+			{
+				$query->where('name', 'LIKE', '%'.$request->name.'%');
+			}
+
+			if(!empty($request->per_page_record))
+			{
+				$perPage = $request->per_page_record;
+				$page = $request->input('page', 1);
+				$total = $query->count();
+				$result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+				$pagination =  [
+					'data' => $result,
+					'total' => $total,
+					'current_page' => $page,
+					'per_page' => $perPage,
+					'last_page' => ceil($total / $perPage)
+				];
+				$query = $pagination;
+			}
+			else
+			{
+				$query = $query->get();
+			}
+
+			return prepareResult(true,'Records Fatched Successfully' ,$query, 200);
+
+		} 
+		catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+	}
+   
+	public function aboutUsTestimonies(Request $request)
+	{
+		try {
+
+			$query = AboutUsTestimony::select('*')->where('status',1)
+			->orderBy('id', 'desc');
+			if(!empty($request->id))
+			{
+				$query->where('id', $request->id);
+			}
+			if(!empty($request->name))
+			{
+				$query->where('name', 'LIKE', '%'.$request->name.'%');
+			}
+
+			if(!empty($request->per_page_record))
+			{
+				$perPage = $request->per_page_record;
+				$page = $request->input('page', 1);
+				$total = $query->count();
+				$result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+				$pagination =  [
+					'data' => $result,
+					'total' => $total,
+					'current_page' => $page,
+					'per_page' => $perPage,
+					'last_page' => ceil($total / $perPage)
+				];
+				$query = $pagination;
+			}
+			else
+			{
+				$query = $query->get();
+			}
+
+			return prepareResult(true,'Records Fatched Successfully' ,$query, 200);
+
+		} 
+		catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+	}
+
+	public function brands(Request $request)
+	{
+		try {
+
+			$query = Brand::select('*')->where('status',1)
+			->orderBy('id', 'desc');
+			if(!empty($request->id))
+			{
+				$query->where('id', $request->id);
+			}
+			if(!empty($request->name))
+			{
+				$query->where('name', 'LIKE', '%'.$request->name.'%');
+			}
+
+			if(!empty($request->per_page_record))
+			{
+				$perPage = $request->per_page_record;
+				$page = $request->input('page', 1);
+				$total = $query->count();
+				$result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+				$pagination =  [
+					'data' => $result,
+					'total' => $total,
+					'current_page' => $page,
+					'per_page' => $perPage,
+					'last_page' => ceil($total / $perPage)
+				];
+				$query = $pagination;
+			}
+			else
+			{
+				$query = $query->get();
+			}
+
+			return prepareResult(true,'Records Fatched Successfully' ,$query, 200);
+
+		} 
+		catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+	}
+   
 }

@@ -83,7 +83,6 @@ class PortfolioController extends Controller
             $portfolioData->description = $request->description;
 			$portfolioData->status = $request->status;
 			$portfolioData->save();
-
 			DB::commit();
 			return prepareResult(true,'Your data has been saved successfully' , $portfolioData, 200);
 
