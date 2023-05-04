@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Menu;
+use App\Models\TalkSales;
+use App\Models\GetQuote;
 use App\Models\AboutUsHighlight;
 use App\Models\AboutUsTestimony;
 use App\Models\Brand;
@@ -139,6 +141,7 @@ class FrontDataController extends Controller
 		try {
 
 			$query = Service::select('*')->where('status',1)
+			->with('menuDetail','subMenuDetail')
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
@@ -440,7 +443,7 @@ class FrontDataController extends Controller
 		try {
 
 			$query = AboutUsHighlight::select('*')->where('status',1)
-			->orderBy('id', 'desc');
+			->orderBy('id', 'asc');
 			if(!empty($request->id))
 			{
 				$query->where('id', $request->id);
@@ -570,4 +573,60 @@ class FrontDataController extends Controller
 		}
 	}
    
+	public function talkSale(Request $request)
+	{
+		$validation = Validator::make($request->all(),  [
+			'name'                      => 'required',
+		 
+		]);
+		if ($validation->fails()) {
+			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
+		} 
+		DB::beginTransaction();
+		try { 
+			$salesInfo = new TalkSales;
+			$salesInfo->name = $request->name;
+			$salesInfo->email = $request->email;
+			$salesInfo->message = $request->message;
+			$salesInfo->call_schedule_date_time = $request->call_schedule_date_time;
+			$salesInfo->mobile_number = $request->mobile_number;
+			$salesInfo->query_about = $request->query_about;
+			$salesInfo->save();
+
+			DB::commit();
+			return prepareResult(true,'Your data has been saved successfully' , $salesInfo, 200);
+
+		} catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+	}
+
+	public function getQuote(Request $request)
+     {
+         $validation = Validator::make($request->all(),  [
+             'name'                      => 'required',
+          
+         ]);
+         if ($validation->fails()) {
+             return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
+         } 
+         DB::beginTransaction();
+         try { 
+             $quoteInfo = new GetQuote;
+             $quoteInfo->service_id = $request->service_id;
+             $quoteInfo->name = $request->name;
+             $quoteInfo->company_name = $request->company_name;
+             $quoteInfo->email = $request->email;
+             $quoteInfo->message = $request->message;
+             $quoteInfo->mobile_number = $request->mobile_number;
+             $quoteInfo->save();
+             DB::commit();
+             return prepareResult(true,'Your data has been saved successfully' , $quoteInfo, 200);
+ 
+         } catch (\Throwable $e) {
+             Log::error($e);
+             return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+         }
+     }
 }

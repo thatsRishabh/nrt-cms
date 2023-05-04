@@ -31,6 +31,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 		 Route::controller(MenuController::class)->group(function () {
 			Route::post('menus', 'menus');
 			Route::post('sub-menus', 'subMenus');
+			Route::get('sub-menu/{id?}', 'showsubMenus');
 			Route::resource('menu', MenuController::class)->only([
 				'store','destroy','show' , 'update']);
 		});
@@ -90,6 +91,18 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 			Route::resource('contact-us', ContactUsontroller::class)->only([
 				'destroy','show',  ]);
 		});	
+		// getQuotes
+		Route::controller(GetQuoteController::class)->group(function () {
+			Route::post('get-quotes', 'getQuotes');
+			Route::resource('get-quote', GetQuoteController::class)->only([
+				'destroy','show',  ]);
+		});
+		// talkSales
+		Route::controller(TalkSalesController::class)->group(function () {
+			Route::post('talk-sales', 'talkSales');
+			Route::resource('talk-sale', TalkSalesController::class)->only([
+				'destroy','show',  ]);
+		});
 		// AboutUsHighlights
 		Route::controller(AboutUsHighlightsController::class)->group(function () {
 			Route::post('about-us-highlights', 'highlights');
@@ -136,6 +149,8 @@ Route::namespace('App\Http\Controllers\Api')->group(function () {
 		Route::post('front/about-us-testimonies', 'aboutUsTestimonies');
 		Route::post('front/brands', 'brands');
 		Route::post('front/contact-us', 'ContactUs');
+		Route::post('front/get-quote', 'getQuote');
+		Route::post('front/talk-sale', 'talkSale');
 		Route::post('front/dynamic-page/{slug?}', 'dynamicPage');
 	});
 });

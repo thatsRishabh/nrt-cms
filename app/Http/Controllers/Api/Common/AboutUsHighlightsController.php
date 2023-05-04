@@ -62,6 +62,7 @@ class AboutUsHighlightsController extends Controller
      {
          $validation = Validator::make($request->all(),  [
              'title'                      => 'required',
+             'status'                      => 'required',
           
          ]);
          if ($validation->fails()) {
@@ -89,7 +90,8 @@ class AboutUsHighlightsController extends Controller
      public function update(Request $request, $id)
      {
          $validation = Validator::make($request->all(), [
-             'title'             => 'required',     
+             'title'             => 'required',
+             'status'            => 'required',     
          ]);
          if ($validation->fails()) {
              return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);

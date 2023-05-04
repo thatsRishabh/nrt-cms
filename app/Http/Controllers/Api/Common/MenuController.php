@@ -134,7 +134,21 @@ class MenuController extends Controller
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
 	}
-
+	public function showsubMenus($id)
+	{
+		try {
+			$menuPage = Menu::whereNotNull('parent_id')->find($id);
+			// $menuPage = Menu::find($id);
+			if($menuPage)
+			{
+				return prepareResult(true,'Record Fatched Successfully' ,$menuPage, 200); 
+			}
+			return prepareResult(false,'Record not found' ,[], 500);
+		} catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+	}
     
 	public function store(Request $request)
 	{

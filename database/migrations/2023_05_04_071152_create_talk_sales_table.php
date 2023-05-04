@@ -8,15 +8,17 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     */ 
+     */
     public function up(): void
     {
-        Schema::create('contact_us', function (Blueprint $table) {
+        Schema::create('talk_sales', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->nullable();
             $table->text('message')->nullable();
+            $table->dateTime('call_schedule_date_time')->nullable();
             $table->bigInteger('mobile_number')->nullable();
+            $table->boolean('query_about')->comment('1 Sales, 2 for Reseller, 3 for Technical')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contact_us');
+        Schema::dropIfExists('talk_sales');
     }
 };

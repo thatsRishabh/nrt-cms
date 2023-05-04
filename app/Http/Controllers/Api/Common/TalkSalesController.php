@@ -5,18 +5,19 @@ namespace App\Http\Controllers\Api\Common;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Brand;
+use App\Models\TalkSales;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-class BrandController extends Controller
+
+class TalkSalesController extends Controller
 {
     //
-    public function brands(Request $request)
+    public function talkSales(Request $request)
      {
          try {
  
-             $query = Brand::select('*')
+             $query = TalkSales::select('*')
              ->orderBy('id', 'desc');
              if(!empty($request->id))
              {
@@ -56,63 +57,14 @@ class BrandController extends Controller
              return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
          }
      }
-    
-     public function store(Request $request)
-     {
-         $validation = Validator::make($request->all(),  [
-             'image_path'                      => 'required',
-          
-         ]);
-         if ($validation->fails()) {
-             return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
-         } 
-         DB::beginTransaction();
-         try { 
-             $brandInfo = new Brand;
-             $brandInfo->title = $request->title;
-             $brandInfo->status = $request->status;
-             $brandInfo->image_path = $request->image_path;
-             $brandInfo->save();
- 
-             DB::commit();
-             return prepareResult(true,'Your data has been saved successfully' , $brandInfo, 200);
- 
-         } catch (\Throwable $e) {
-             Log::error($e);
-             return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
-         }
-     }
-     
-     public function update(Request $request, $id)
-     {
-         $validation = Validator::make($request->all(), [
-             'image_path'             => 'required',     
-         ]);
-         if ($validation->fails()) {
-             return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
-         } 
-         DB::beginTransaction();
-         try {      
-             $brandInfo= Brand::find($id);
-             $brandInfo->title = $request->title;
-             $brandInfo->status = $request->status;
-             $brandInfo->image_path = $request->image_path;
-             $brandInfo->save();
-             DB::commit();
-             return prepareResult(true,'Your data has been Updated successfully' ,$brandInfo, 200);
-         } catch (\Throwable $e) {
-             Log::error($e);
-             return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
-         }
-     }
  
      public function show($id)
      {
          try {
-             $brandInfo = Brand::find($id);
-             if($brandInfo)
+             $salesInfo = TalkSales::find($id);
+             if($salesInfo)
              {
-                 return prepareResult(true,'Record Fatched Successfully' ,$brandInfo, 200); 
+                 return prepareResult(true,'Record Fatched Successfully' ,$salesInfo, 200); 
              }
              return prepareResult(false,'Record not found' ,[], 500);
          } catch (\Throwable $e) {
@@ -124,10 +76,10 @@ class BrandController extends Controller
      public function destroy($id)
      {
          try {
-             $brandInfo = Brand::find($id);
-             if($brandInfo)
+             $salesInfo = TalkSales::find($id);
+             if($salesInfo)
              {
-                 $result=$brandInfo->delete();
+                 $result=$salesInfo->delete();
                  return prepareResult(true,'Record Deleted Successfully' ,$result, 200); 
              }
              return prepareResult(false,'Record Not Found' ,[], 500);
