@@ -120,7 +120,13 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 			Route::post('brands', 'brands');
 			Route::resource('brand', BrandController::class)->only([
 				'store','destroy','show','update'  ]);
-		});				
+		});
+		// Career
+		Route::controller(CareerController::class)->group(function () {
+			Route::post('careers', 'careers');
+			Route::resource('career', CareerController::class)->only([
+				'store','destroy','show','update'  ]);
+		});							
 		// DynamicPage
 		Route::controller(DynamicPageController::class)->group(function () {
 			Route::post('dynamic-pages', 'dynamicPages');
@@ -151,6 +157,7 @@ Route::namespace('App\Http\Controllers\Api')->group(function () {
 		Route::post('front/contact-us', 'ContactUs');
 		Route::post('front/get-quote', 'getQuote');
 		Route::post('front/talk-sale', 'talkSale');
+		Route::post('front/careers', 'careers');
 		Route::post('front/dynamic-page/{slug?}', 'dynamicPage');
 	});
 });
