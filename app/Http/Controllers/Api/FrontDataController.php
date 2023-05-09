@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Menu;
 use App\Models\Career;
+use App\Models\Faq;
 use App\Models\TalkSales;
 use App\Models\GetQuote;
 use App\Models\AboutUsHighlight;
@@ -649,6 +650,55 @@ class FrontDataController extends Controller
 			{
 				$query->where('status',$request->status);
 			}
+            if(!empty($request->per_page_record))
+            {
+                $perPage = $request->per_page_record;
+                $page = $request->input('page', 1);
+                $total = $query->count();
+                $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+                $pagination =  [
+                    'data' => $result,
+                    'total' => $total,
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'last_page' => ceil($total / $perPage)
+                ];
+                $query = $pagination;
+            }
+            else
+            {
+                $query = $query->get();
+            }
+
+            return prepareResult(true,'Records Fatched Successfully' ,$query, 200);
+
+        } 
+        catch (\Throwable $e) {
+            Log::error($e);
+            return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+        }
+    }
+
+	public function faqs(Request $request)
+    {
+        try {
+
+            $query = Faq::select('*')->where('status',1)
+            ->orderBy('id', 'desc');
+            if(!empty($request->id))
+            {
+                $query->where('id', $request->id);
+            }
+            if(!empty($request->title))
+            {
+                $query->where('title', 'LIKE', '%'.$request->title.'%');
+            }
+            if(!empty($request->status))
+			{
+				$query->where('status',$request->status);
+			}
+
             if(!empty($request->per_page_record))
             {
                 $perPage = $request->per_page_record;
