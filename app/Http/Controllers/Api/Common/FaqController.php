@@ -66,7 +66,6 @@ class FaqController extends Controller
     {
         $validation = Validator::make($request->all(),  [
             'title'                      => 'required',
-         
         ]);
         if ($validation->fails()) {
             return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
