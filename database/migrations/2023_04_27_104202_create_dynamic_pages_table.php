@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('banner_image_path')->nullable();
             $table->string('document_path')->nullable();
             $table->text('description')->nullable();
+            // $table->boolean('is_different')->comment('1 for active , 2 for no')->nullable();
             $table->boolean('status')->comment('1 for active , 2 for inactive')->nullable();
             $table->timestamps();
         });

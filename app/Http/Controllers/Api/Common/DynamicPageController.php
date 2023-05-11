@@ -32,7 +32,11 @@ class DynamicPageController extends Controller
              {
                  $query->where('status',$request->status);
              }
- 
+             if(!empty($request->is_different))
+             {
+                 $query->where('is_different',$request->is_different);
+             }
+
              if(!empty($request->per_page_record))
              {
                  $perPage = $request->per_page_record;
@@ -84,7 +88,7 @@ class DynamicPageController extends Controller
             else {
                 $dynamicInfos = new DynamicPage;
             }
-
+            
              $dynamicInfos->menu_id = $request->menu_id;
              $dynamicInfos->sub_menu_id = $request->sub_menu_id;
              $dynamicInfos->title = $request->title;
@@ -93,6 +97,7 @@ class DynamicPageController extends Controller
              $dynamicInfos->document_path = $request->document_path;
              $dynamicInfos->description = $request->description;
              $dynamicInfos->status = $request->status;
+            //  $dynamicInfos->is_different = $request->is_different;
              $dynamicInfos->save();
  
              DB::commit();
@@ -114,14 +119,6 @@ class DynamicPageController extends Controller
          } 
          DB::beginTransaction();
          try {   
-            
-            // if(!empty($request->menu_id)) {
-            //     $checkId= DynamicPage::where('menu_id',$request->menu_id)->where('sub_menu_id',$request->sub_menu_id)->first();
-            //     if($checkId)
-            //     {
-            //         return prepareResult(false,'Record Already exists with given menu!',[],500);
-            //     }
-            // }
 
             $dynamicInfos = DynamicPage::find($id);
             if (!is_object($dynamicInfos)) {
@@ -136,6 +133,7 @@ class DynamicPageController extends Controller
              $dynamicInfos->document_path = $request->document_path;
              $dynamicInfos->description = $request->description;
              $dynamicInfos->status = $request->status;
+            //  $dynamicInfos->is_different = $request->is_different;
              $dynamicInfos->save();
              DB::commit();
              return prepareResult(true,'Your data has been Updated successfully' ,$dynamicInfos, 200);
