@@ -111,6 +111,9 @@ class TeamController extends Controller
          DB::beginTransaction();
          try {      
              $teamInfo= Team::find($id);
+             if (empty($teamInfo)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
              $teamInfo->name = $request->name;
              $teamInfo->title = $request->title;
              $teamInfo->sub_title = $request->sub_title;

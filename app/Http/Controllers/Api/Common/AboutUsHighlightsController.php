@@ -99,6 +99,9 @@ class AboutUsHighlightsController extends Controller
          DB::beginTransaction();
          try {      
              $highlight= AboutUsHighlight::find($id);
+             if (empty($highlight)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
              $highlight->title = $request->title;
              $highlight->description = $request->description;
              $highlight->status = $request->status;

@@ -104,6 +104,9 @@ class TestimonialController extends Controller
          DB::beginTransaction();
          try {      
              $testimony= Testimonial::find($id);
+             if (empty($testimony)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
              $testimony->name = $request->name;
              $testimony->content = $request->content;
              $testimony->designation = $request->designation;

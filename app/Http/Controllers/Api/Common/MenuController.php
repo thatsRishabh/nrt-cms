@@ -196,6 +196,9 @@ class MenuController extends Controller
 		DB::beginTransaction();
 		try {      
 			$menuPage= Menu::find($id);
+			if (empty($menuPage)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
 			$menuPage->name = $request->name;
             $menuPage->parent_id = $request->parent_id;
             $menuPage->slug = Str::slug($request->name);

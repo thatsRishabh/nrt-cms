@@ -108,6 +108,9 @@ class SliderController extends Controller
 		DB::beginTransaction();
 		try {      
 			$sliderImage= Slider::find($id);
+			if (empty($sliderImage)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
 			$sliderImage->title = $request->title;
 			$sliderImage->sub_title = $request->sub_title;
 			$sliderImage->button_test = $request->button_test;

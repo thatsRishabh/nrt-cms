@@ -108,6 +108,9 @@ class ServiceController extends Controller
 		DB::beginTransaction();
 		try {      
 			$servicePage= Service::find($id);
+			if (empty($servicePage)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
 			$servicePage->name = $request->name;
             $servicePage->menu_id = $request->menu_id;
 			$servicePage->sub_menu_id = $request->sub_menu_id;

@@ -99,6 +99,9 @@ class SeoKeyController extends Controller
          DB::beginTransaction();
          try {      
              $seoInfo= SeoKey::find($id);
+             if (empty($seoInfo)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
              $seoInfo->page_name = $request->page_name;
              $seoInfo->page_title = $request->page_title;
              $seoInfo->meta_keywords = $request->meta_keywords;

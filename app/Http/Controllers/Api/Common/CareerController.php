@@ -99,6 +99,9 @@ class CareerController extends Controller
         DB::beginTransaction();
         try {      
             $careerData= Career::find($id);
+            if (empty($careerData)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
             $careerData->title = $request->title;
             $careerData->description = $request->description;
             $careerData->open_position = $request->open_position;

@@ -96,6 +96,9 @@ class AboutUsTestimonycontroller extends Controller
          DB::beginTransaction();
          try {      
              $testimony= AboutUsTestimony::find($id);
+             if (empty($testimony)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
              $testimony->name = $request->name;
              $testimony->address = $request->address;
              $testimony->description = $request->description;

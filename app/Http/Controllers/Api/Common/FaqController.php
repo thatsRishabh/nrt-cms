@@ -98,6 +98,9 @@ class FaqController extends Controller
         DB::beginTransaction();
         try {      
             $FaqData= Faq::find($id);
+            if (empty($FaqData)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
             $FaqData->title = $request->title;
             $FaqData->description = $request->description;
             $FaqData->status = $request->status;

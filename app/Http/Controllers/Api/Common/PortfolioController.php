@@ -105,6 +105,9 @@ class PortfolioController extends Controller
 		DB::beginTransaction();
 		try {      
 			$portfolioData= Portfolio::find($id);
+			if (empty($portfolioData)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
             $portfolioData->name = $request->name;
             $portfolioData->project_type = $request->project_type;
             $portfolioData->slug =Str::slug($request->name);

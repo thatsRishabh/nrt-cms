@@ -94,6 +94,9 @@ class BrandController extends Controller
          DB::beginTransaction();
          try {      
              $brandInfo= Brand::find($id);
+             if (empty($brandInfo)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
              $brandInfo->title = $request->title;
              $brandInfo->status = $request->status;
              $brandInfo->image_path = $request->image_path;

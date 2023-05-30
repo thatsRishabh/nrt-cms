@@ -110,6 +110,9 @@ class BlogController extends Controller
         DB::beginTransaction();
         try {      
             $blogPost= Blog::find($id);
+            if (empty($blogPost)) {
+				return prepareResult(false,'Record Not Found' ,[], 500);
+			 }
             $blogPost->title = $request->title;
             $blogPost->slug = Str::slug($request->title);
             $blogPost->content = $request->content;
